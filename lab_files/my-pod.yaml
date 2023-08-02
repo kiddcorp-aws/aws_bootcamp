@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  namespace: dev
+spec:
+  serviceAccountName: ddb-sa-2
+  containers:
+  - name: pod2
+    image: nginx:latest

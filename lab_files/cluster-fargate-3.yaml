@@ -1,0 +1,40 @@
+# An example of ClusterConfig with a normal nodegroup and a Fargate profile.
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: fargate-cluster-3
+  region: us-east-1
+
+  
+vpc:
+  id: "vpc-07ed47389746d9ddc"
+  cidr: "10.0.0.0/26"
+  subnets: # FARGATE Must be Private
+    private:
+      us-east-1a:
+        id: "subnet-03747f12f744c4dc8"  
+        cidr: "10.0.0.32/28" 
+      us-east-1b:
+        id: "subnet-019007bdc59d8d378" 
+        cidr: "10.0.0.48/28"     	  
+
+      
+fargateProfiles:
+  - name: fp-default
+    selectors:
+      # All workloads in the "default" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: default
+      # All workloads in the "kube-system" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: kube-system
+    subnets: [ "subnet-03747f12f744c4dc8", "subnet-019007bdc59d8d378" ]
+    
+  - name: fp-dev
+    selectors:
+      # All workloads in the "dev" Kubernetes namespace matching the following
+      # label selectors will be scheduled onto Fargate:
+      - namespace: dev        
+    subnets: [ "subnet-03747f12f744c4dc8", "subnet-019007bdc59d8d378" ]
